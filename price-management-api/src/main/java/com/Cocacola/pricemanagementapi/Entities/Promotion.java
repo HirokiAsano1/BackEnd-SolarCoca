@@ -32,4 +32,5 @@ public class Promotion {
     private Level level;
 
     private double promotionalPrice;
+    private double promotionalPercent;
 }

@@ -28,6 +28,7 @@ public class PromotionService {
     public List<Promotion> getPromotions(){
         return promotionRepository.findAll();
     }
+    double promotionalPercetage = 0;
 
     @Transactional
     public void generatePromotions() {
@@ -43,23 +44,45 @@ public class PromotionService {
                 promotion.setProduct(product);
                 promotion.setLevel(level);
                 promotion.setPromotionalPrice(promotionalPrice);
-
+                promotion.setPromotionalPercent(promotionalPercetage);
                 promotionRepository.save(promotion);
             }
         }
     }
 
+    @Transactional
+    public void generatePromotion( Product product) {
+        List<Level> levels = levelRepository.findAll();
+
+            for (Level level : levels) {
+                double promotionalPrice = calculatePromotionalPrice(product, level);
+
+                Promotion promotion = new Promotion();
+                promotion.setProduct(product);
+                promotion.setLevel(level);
+                promotion.setPromotionalPrice(promotionalPrice);
+                promotion.setPromotionalPercent(promotionalPercetage);
+                promotionRepository.save(promotion);
+            }
+
+    }
+
+
     private double calculatePromotionalPrice(Product product, Level level) {
 
         if (level.getId()==2)
         {
-            return product.getPrice() * 0.8;
+            this.promotionalPercetage = 20;
+            double total = product.getPrice()*promotionalPercetage/100;
+            return product.getPrice()-total;
         }
 
         else if (level.getId()==3){
-
-            return product.getPrice() * 0.6;
+            this.promotionalPercetage = 40;
+            double total = product.getPrice()*promotionalPercetage/100;
+            return product.getPrice()-total;
         }
+        this.promotionalPercetage = 0;
         return product.getPrice() ;
     }
 }

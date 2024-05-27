@@ -15,6 +15,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private PromotionService promotionService;
+    
     @Override
     public List<Product> getProducts() {
         return productRepository.findAll();
@@ -29,7 +32,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addProduct(Product product) {
+
         productRepository.save(product);
+        promotionService.generatePromotion(product);
+
     }
 
     @Override
